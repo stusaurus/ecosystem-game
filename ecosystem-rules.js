@@ -63,7 +63,7 @@
   updateNutrients=function(dtYears){
     const slow=state.year<state.plantSlowUntil;
     const boost=state.year<state.plantBoostUntil;
-    const growthRate=boost?1.7:slow?.45:1;
+    const growthRate=boost?1.7:(slow?.45:1);
 
     for(const n of state.nutrients){
       n.life=(n.life??4.6)-dtYears;
