@@ -1,33 +1,32 @@
-// Native-navigation stage reset for reliable mobile Safari behavior.
+// Reliable current-stage restart. Reuses the same stage-button path that already works in the game.
 (function(){
-  const params=new URLSearchParams(location.search);
-  const restart=params.get('restart');
+  function install(){
+    const btn=document.getElementById('v3Reset');
+    if(!btn)return;
 
-  function installResetLink(){
-    const old=document.getElementById('v3Reset');
-    if(!old || old.tagName==='A') return;
-    const stageIndex=Number(state.stageIndex||0);
-    const a=document.createElement('a');
-    a.id='v3Reset';
-    a.className=old.className;
-    a.textContent='この面を最初からやり直す';
-    a.href=`?restart=${stageIndex}&v=20260901-10`;
-    a.style.display='grid';
-    a.style.placeItems='center';
-    a.style.textDecoration='none';
-    old.replaceWith(a);
+    // ui-v3 recreates this button whenever Details opens, so replace its handler each time.
+    btn.onclick=function(e){
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Close the details overlay first.
+      const overlay=document.getElementById('v3Overlay');
+      if(overlay)overlay.classList.add('hidden');
+
+      const index=Number(state.stageIndex||0);
+      const stageBtn=document.querySelector(`.stage-btn[data-stage="${index}"]`);
+
+      // Use the exact same route as tapping the current stage number.
+      if(stageBtn && !stageBtn.disabled){
+        stageBtn.click();
+      }else if(typeof startStage==='function'){
+        startStage(index);
+      }
+    };
   }
 
-  const observer=new MutationObserver(installResetLink);
+  // The Details panel is rendered dynamically, so bind after each DOM change.
+  const observer=new MutationObserver(install);
   observer.observe(document.body,{childList:true,subtree:true});
-  installResetLink();
-
-  if(restart!==null){
-    const index=Math.max(0,Math.min(STAGES.length-1,Number(restart)||0));
-    // All game scripts are loaded before this file. Start the requested stage fresh.
-    startStage(index);
-    const clean=new URL(location.href);
-    clean.searchParams.delete('restart');
-    history.replaceState(null,'',clean.pathname+clean.search+clean.hash);
-  }
+  install();
 })();
