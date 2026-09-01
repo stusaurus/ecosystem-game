@@ -1,8 +1,24 @@
-// Child-friendly visual upgrade: a picture-book rabbit and bright grassland.
+// Child-friendly visual upgrade: picture-book animals and a bright grassland.
 // Simulation rules stay in the existing files; this layer only changes drawing.
 (function(){
-  const rabbitSprite=new Image();
-  rabbitSprite.src='assets/rabbit-topdown-v3.png?v=20260901-1';
+  const animalSpriteFiles={
+    rabbit:'assets/rabbit-topdown-v3.png?v=20260901-1',
+    fox:'assets/fox-topdown-v1.png?v=20260901-1',
+    deer:'assets/deer-topdown-v1.png?v=20260901-1',
+    wolf:'assets/wolf-topdown-v1.png?v=20260901-1'
+  };
+  const animalSpriteSizes={
+    rabbit:[42,64],
+    fox:[47,70],
+    deer:[50,75],
+    wolf:[52,78]
+  };
+  const animalSprites={};
+  for(const [type,src] of Object.entries(animalSpriteFiles)){
+    const image=new Image();
+    image.src=src;
+    animalSprites[type]=image;
+  }
 
   const previousDrawEntity=drawEntity;
   const previousDraw=draw;
@@ -132,14 +148,16 @@
     ctx.restore();
   }
 
-  function drawRabbit(a){
-    const d=SPECIES.rabbit;
+  function drawIllustratedAnimal(a){
+    const d=SPECIES[a.type];
     const adult=clamp(a.age/d.adultAge,0,1);
     const scale=.68+adult*.32;
-    const width=42*scale;
-    const height=64*scale;
+    const [baseWidth,baseHeight]=animalSpriteSizes[a.type]||[46,68];
+    const width=baseWidth*scale;
+    const height=baseHeight*scale;
     const direction=Math.atan2(a.vy,a.vx)+Math.PI/2;
     const hop=Math.sin(performance.now()*.011+a.id*1.7)*1.1*scale;
+    const sprite=animalSprites[a.type];
 
     const visual=separatedAnimalPosition(a);
     ctx.save();
@@ -160,10 +178,10 @@
     ctx.save();
     ctx.rotate(direction);
     ctx.translate(0,hop);
-    if(rabbitSprite.complete&&rabbitSprite.naturalWidth){
+    if(sprite&&sprite.complete&&sprite.naturalWidth){
       ctx.shadowColor='rgba(255,248,220,.72)';
       ctx.shadowBlur=3;
-      ctx.drawImage(rabbitSprite,-width/2,-height/2,width,height);
+      ctx.drawImage(sprite,-width/2,-height/2,width,height);
       ctx.shadowColor='transparent';
       ctx.shadowBlur=0;
     }else{
@@ -252,7 +270,7 @@
   drawEntity=function(e){
     if(e.type==='grass'){drawGrass(e);return;}
     if(e.type==='sapling'){drawSapling(e);return;}
-    if(e.type==='rabbit'){drawRabbit(e);return;}
+    if(SPECIES[e.type]){drawIllustratedAnimal(e);return;}
     previousDrawEntity(e);
   };
 
