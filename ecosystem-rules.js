@@ -1,17 +1,108 @@
-// Strong classroom ecosystem rules: abundant green cover and a hard land-only animal zone.
+// Ecosystem core: abundant starting vegetation, nutrient-limited regrowth, and hard land-only movement.
 (function(){
-  // A healthy ecosystem must keep a substantial producer base.
-  const GREEN_MIN=[55,65,75,85,95];
-  const GRASS_ZONE_MIN=[45,50,56,62,68];
-  const SAPLING_ZONE_MIN=[7,8,10,11,12];
+  // The continent begins green. Plants do not endlessly respawn by themselves.
+  const GREEN_START=[
+    {grass:120,sapling:20},
+    {grass:132,sapling:22},
+    {grass:144,sapling:24},
+    {grass:154,sapling:26},
+    {grass:164,sapling:28}
+  ];
+  const GREEN_MIN=[75,85,95,105,115];
+  const GRASS_ZONE_MIN=[62,68,74,80,86];
+  const SAPLING_ZONE_MIN=[8,9,10,11,12];
+
   STAGES.forEach((stage,i)=>{
+    stage.start.grass=GREEN_START[i].grass;
+    stage.start.sapling=GREEN_START[i].sapling;
     stage.required.plants=GREEN_MIN[i];
     if(stage.zones?.grass) stage.zones.grass[0]=GRASS_ZONE_MIN[i];
     if(stage.zones?.sapling) stage.zones.sapling[0]=SAPLING_ZONE_MIN[i];
   });
 
+  // Larger bodies return more nutrients when they die.
+  DEATH_PLANT_BONUS.wolf=14;
+  DEATH_PLANT_BONUS.fox=9;
+  DEATH_PLANT_BONUS.deer=12;
+  DEATH_PLANT_BONUS.rabbit=4;
+  const STARVATION_NUTRIENTS={wolf:10,fox:7,deer:9,rabbit:3};
+
+  // Expose one simple value for the classroom UI.
+  window.soilNutrientAmount=function(){
+    return Math.round((state.nutrients||[]).reduce((sum,n)=>sum+Math.max(0,n.remaining||0),0));
+  };
+
+  // Plants no longer appear from nowhere. All regrowth is handled by nutrient patches below.
+  growPlants=function(){
+    plantTimer=0;
+  };
+
+  // Natural death is already handled by the base game. Add nutrient return for starvation as well.
+  const lifeBeforeCycle=lifeAndDeath;
+  lifeAndDeath=function(){
+    const before=new Map(state.animals.map(a=>[a.id,{
+      id:a.id,type:a.type,x:a.x,y:a.y,age:a.age,maxAge:a.maxAge,starveTime:a.starveTime
+    }]));
+    lifeBeforeCycle();
+    const alive=new Set(state.animals.map(a=>a.id));
+    for(const a of before.values()){
+      if(alive.has(a.id))continue;
+      const wasOld=a.age>=a.maxAge;
+      const wasStarved=a.starveTime>.45;
+      if(!wasOld&&wasStarved){
+        const amount=STARVATION_NUTRIENTS[a.type]||3;
+        state.nutrients.push({x:a.x,y:a.y,remaining:amount,timer:.18,life:4.6,type:'starved'});
+        addLog(`${SPECIES[a.type].icon}${SPECIES[a.type].name}が餓死し、体の栄養が土へ戻りました。`);
+        ticker('動物の死によって、土に植物を育てる栄養が戻った。');
+        burst(a.x,a.y,'🍂');
+      }
+    }
+  };
+
+  // Nutrient patches are the only source of new plants.
+  updateNutrients=function(dtYears){
+    const slow=state.year<state.plantSlowUntil;
+    const boost=state.year<state.plantBoostUntil;
+    const growthRate=boost?1.7:slow?.45:1;
+
+    for(const n of state.nutrients){
+      n.life=(n.life??4.6)-dtYears;
+      n.timer=(n.timer??.2)-dtYears*growthRate;
+
+      if(n.remaining>0&&n.timer<=0){
+        n.timer=rand(.20,.44);
+        const angle=rand(0,Math.PI*2),r=rand(8,64);
+        const pos={x:n.x+Math.cos(angle)*r,y:n.y+Math.sin(angle)*r};
+        if(ctx.isPointInPath(state.continent,pos.x,pos.y)){
+          const type=Math.random()<.16?'sapling':'grass';
+          const current=state.plants.filter(p=>p.type===type).length;
+          if(current<CAPS[type]){
+            state.plants.push(createPlant(type,pos));
+            n.remaining--;
+            n.life=Math.max(n.life,.9);
+          }
+        }
+      }
+    }
+    state.nutrients=state.nutrients.filter(n=>n.remaining>0||n.life>0);
+  };
+
+  // Keep the learning text aligned with the nutrient cycle.
+  if(typeof LEARNING!=='undefined'){
+    LEARNING[0].theme='植物・動物・土のつながり';
+    LEARNING[0].learn='最初は植物がたくさんあります。うさぎが食べると植物は減り、動物が死ぬと栄養が土へ戻って新しい植物が育ちます。';
+    LEARNING[0].question='うさぎが増え続けたのに、まだ動物があまり死んでいなかったら、植物はどうなるかな？';
+    LEARNING[1].learn='狐はうさぎを食べ、うさぎの増えすぎをおさえます。捕食された栄養は狐へ移り、その狐がいつか死ぬと土へ戻ります。';
+    LEARNING[2].learn='鹿とうさぎはどちらも植物を食べます。草食動物が多すぎると、土へ栄養が戻るより早く植物が減ってしまいます。';
+    LEARNING[3].learn='狼・狐・鹿・うさぎ・植物・土の栄養がつながると、1種類の増減が時間差で大陸全体へ広がります。';
+    LEARNING[4].learn='環境の変化が起きても、植物を食べる量と、死によって土へ戻る栄養の両方を見て生態系を立て直します。';
+  }
+
+  const note=document.getElementById('controls')?.closest('.panel')?.querySelector('.note');
+  if(note)note.textContent='草や木の芽は直接増やせません。動物が死んで土へ栄養が戻ることで、新しい植物が育ちます。';
+
+  // Hard land-only movement.
   function hardMargin(a){
-    // Large visual buffer: the whole emoji plus its shadow/energy bar stays inland.
     return Math.max(46,a.radius+34);
   }
 
@@ -60,7 +151,6 @@
       return;
     }
 
-    // Look far enough ahead that fast animals cannot step across the coast between frames.
     const look=Math.max(.28,dtSec*5.5);
     const nx=a.x+a.vx*look,ny=a.y+a.vy*look;
     if(!completelyOnLand(nx,ny,margin)) pointInward(a);
@@ -75,7 +165,7 @@
     return a;
   };
 
-  // Final visual safety net: animals/plants/particles can never be painted on the sea.
+  // Nothing is ever painted on the sea.
   draw=function(){
     drawBackground();
     ctx.save();
@@ -88,13 +178,6 @@
     ctx.restore();
   };
 
-  // Re-home any animals that existed before this file loaded.
-  for(const a of state.animals){
-    if(!completelyOnLand(a.x,a.y,hardMargin(a))){
-      const p=deepLandPoint(a);a.x=p.x;a.y=p.y;pointInward(a);
-    }
-  }
-
-  if(typeof renderStage==='function') renderStage();
-  if(typeof renderLearning==='function') renderLearning();
+  // Apply the new starting vegetation immediately on page load.
+  if(typeof startStage==='function')startStage(state.stageIndex||0);
 })();
