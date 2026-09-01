@@ -32,7 +32,7 @@
       .unified-toolbar{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:4px}.unified-btn{min-height:42px;border:1px solid var(--line,#d4e1e7);border-radius:12px;background:#fff;color:var(--ink,#20313a);font-weight:900;font-size:11px;touch-action:manipulation}.unified-btn.primary{background:#29485b;color:#fff;border-color:#29485b}
       .unified-overlay{position:fixed;inset:0;z-index:500;background:rgba(25,42,51,.58);display:grid;place-items:center;padding:10px;touch-action:manipulation}.unified-overlay.hidden{display:none!important}.unified-dialog{width:min(540px,100%);max-height:calc(100dvh - 20px);overflow:auto;background:#fffdf8;border:1px solid #d4e1e7;border-radius:20px;padding:12px;box-shadow:0 24px 60px rgba(20,35,44,.3);-webkit-overflow-scrolling:touch}.unified-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.unified-head h2{font-size:17px;margin:0}.unified-close{width:44px;height:44px;border:1px solid #d4e1e7;border-radius:12px;background:#fff;font-size:20px;font-weight:900;touch-action:manipulation}
       .u-section{border:1px solid #d4e1e7;border-radius:13px;background:#fff;padding:9px;margin-top:7px}.u-title{font-size:11px;font-weight:900;margin-bottom:6px}.u-checks{display:grid;grid-template-columns:1fr 1fr;gap:5px 8px}.u-check{display:grid;grid-template-columns:18px 1fr;gap:5px;align-items:start;font-size:10px;line-height:1.35}.u-check i{font-style:normal;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:#f0f3f4;color:#85949a;font-weight:900}.u-check.ok i{background:#e4f4e8;color:#3f8554}.u-check small{display:block;color:#61727a;font-size:9px}.u-counts{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.u-count{border:1px solid #d4e1e7;border-radius:10px;padding:6px 7px;text-align:center;font-size:10px}.u-count b{display:block;font-size:14px;margin-top:1px}.u-learning{background:#fff8d9;border-color:#eadfae}.u-learning b{display:block;font-size:12px;margin-bottom:3px;color:#695617}.u-advice{font-size:11px;line-height:1.6}.u-hint{padding:7px 8px;border-radius:10px;background:#f4f9fb;margin-top:5px}.u-question{margin-top:7px;padding:7px 8px;border-left:3px solid #6da0b6;background:#f3f9fc;border-radius:0 9px 9px 0;font-size:10px;line-height:1.5}
-      .u-aid-rule{padding:9px 10px;background:#fff8df;border:1px solid #eadfae;border-radius:11px;font-size:11px;font-weight:900;line-height:1.45;margin-bottom:8px}.u-aid-status{display:flex;justify-content:space-between;gap:8px;padding:8px 9px;background:#f3f8fa;border-radius:11px;font-size:11px;font-weight:900;margin-bottom:8px}.u-aid-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.u-aid{min-height:60px;border:1px solid #d4e1e7;border-radius:13px;background:#fff;text-align:left;padding:9px;color:#20313a;touch-action:manipulation}.u-aid strong{display:block;font-size:13px}.u-aid span{display:block;font-size:10px;color:#61727a;margin-top:4px}.u-aid:disabled{opacity:.38}.u-aid-note{margin-top:9px;padding:8px 9px;border:1px dashed #b9d6b5;background:#f5fbf2;border-radius:10px;font-size:10px;color:#587159;line-height:1.5}.u-back,.u-reset{width:100%;min-height:46px;margin-top:9px;border:0;border-radius:12px;background:#29485b;color:#fff;font-size:13px;font-weight:900;touch-action:manipulation}.u-reset{background:#fff5f3;color:#995249;border:1px solid #e1c9c5}
+      .u-aid-rule{padding:9px 10px;background:#fff8df;border:1px solid #eadfae;border-radius:11px;font-size:11px;font-weight:900;line-height:1.45;margin-bottom:8px}.u-aid-status{display:flex;justify-content:space-between;gap:8px;padding:8px 9px;background:#f3f8fa;border-radius:11px;font-size:11px;font-weight:900;margin-bottom:8px}.u-aid-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.u-aid{min-height:60px;border:1px solid #d4e1e7;border-radius:13px;background:#fff;text-align:left;padding:9px;color:#20313a;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08)}.u-aid strong{display:block;font-size:13px}.u-aid span{display:block;font-size:10px;color:#61727a;margin-top:4px}.u-aid:disabled{opacity:.38}.u-aid.chosen{background:#e9f7ec;border-color:#93c59e}.u-aid-note{margin-top:9px;padding:8px 9px;border:1px dashed #b9d6b5;background:#f5fbf2;border-radius:10px;font-size:10px;color:#587159;line-height:1.5}.u-back,.u-reset{width:100%;min-height:46px;margin-top:9px;border:0;border-radius:12px;background:#29485b;color:#fff;font-size:13px;font-weight:900;touch-action:manipulation}.u-reset{background:#fff5f3;color:#995249;border:1px solid #e1c9c5}
       @media(max-width:420px){.topbar h1{font-size:16px}.top-buttons .pill{padding:5px 7px;font-size:9px}.stage-card{padding:5px 7px}.unified-dialog{padding:9px}.unified-req{font-size:7.5px;padding:3px 2px}.u-checks{gap:4px 6px}.u-aid-grid{gap:6px}}
       @media(max-height:700px){.topbar{min-height:30px}.topbar h1{font-size:15px}.top-buttons .pill{min-height:29px;padding:4px 6px}.stage-mission{display:none}.stage-card{padding:4px 6px}.stage-bottom{display:none!important}.world-card>.section-head{min-height:22px}.unified-btn{min-height:38px}.ticker{display:none}.unified-req{padding:3px 2px}}
     `;
@@ -129,33 +129,39 @@
     const names=list.map(k=>`${SPECIES[k].icon}${SPECIES[k].name}`).join('・')||'なし';
     body.innerHTML=`<div class="u-aid-rule">この面で介入できる動物：${names}</div><div class="u-aid-status"><span>介入ポイント ${state.interventionPoints}/${rule.points}</span><span>${cooldown>0?`次まで ${cooldown.toFixed(1)}年`:'介入可能'}</span></div>
       <div class="u-aid-grid">${list.map(type=>{const d=SPECIES[type],cost=AID_COST[type],amount=AID_AMOUNT[type],delay=AID_DELAY[type],disabled=aidLocked||state.interventionPoints<cost||cooldown>0;return `<button type="button" class="u-aid" data-u-aid="${type}" ${disabled?'disabled':''}><strong>${d.icon} ${d.name} +${amount}</strong><span>${cost}pt・約${delay.toFixed(1)}年後に到着</span></button>`;}).join('')}</div><div class="u-aid-note">🌿 植物には直接介入できません。現在の土の栄養：${nutrient()}</div><button type="button" id="uAidBack" class="u-back">何もせず大陸へ戻る</button>`;
-    body.querySelectorAll('[data-u-aid]').forEach(btn=>btn.onclick=()=>requestAid(btn.dataset.uAid));
     $('uAidBack').onclick=closeOverlay;
   }
 
-  function requestAid(type){
+  function requestAid(type,button){
     if(aidLocked||overlayMode!=='aid'||state.stageDone||state.modalOpen)return;
     const list=AID_BY_STAGE[state.stageIndex]||[];if(!list.includes(type))return;
     const rule=AID_RULES[state.stageIndex],cost=AID_COST[type],amount=AID_AMOUNT[type],delay=AID_DELAY[type],cooldown=Math.max(0,state.nextInterventionYear-state.year);
-    if(state.interventionPoints<cost||cooldown>0){renderAid();return;}
+    if(state.interventionPoints<cost||cooldown>0)return;
+    if(!Array.isArray(state.pendingInterventions))state.pendingInterventions=[];
     aidLocked=true;
     state.interventionPoints-=cost;
     state.nextInterventionYear=state.year+rule.cooldown;
     state.pendingInterventions.push({type,amount,due:state.year+delay});
     const d=SPECIES[type];
+    if(button){button.classList.add('chosen');button.disabled=true;}
     addLog(`${d.icon}${d.name}の支援を要請。${delay.toFixed(1)}年後に到着予定。`);
     ticker(`${d.icon}${d.name} +${amount} を要請。約${delay.toFixed(1)}年後に到着。`);
-    closeOverlay();
+    requestAnimationFrame(()=>closeOverlay());
   }
+
+  // One stable delegated handler: the intervention buttons are not destroyed while the overlay is open.
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest?.('[data-u-aid]');
+    if(!btn)return;
+    e.preventDefault();
+    e.stopPropagation();
+    requestAid(btn.getAttribute('data-u-aid'),btn);
+  },true);
 
   ensureUI();
   renderReqs();
   setInterval(()=>{
+    // Only the always-visible requirements need live refresh. Overlays are paused snapshots.
     renderReqs();
-    if(!$('unifiedOverlay')?.classList.contains('hidden')){
-      if(overlayMode==='detail')renderDetail();
-      else if(overlayMode==='hint')renderHint();
-      else if(overlayMode==='aid'&&!aidLocked)renderAid();
-    }
   },500);
 })();
