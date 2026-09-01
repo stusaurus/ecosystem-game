@@ -35,13 +35,15 @@ function requiredStableYears(){
 function requirementSnapshot(){
   const s=currentStage(), c=counts(), r=s.required, plants=c.grass+c.sapling;
   const items=[];
+  const currentScore=stability(c);
   if(r.wolf) items.push({ok:c.wolf>=r.wolf,text:`🐺 狼が ${r.wolf}匹以上いる`,now:`いま ${c.wolf}匹`});
   if(r.fox) items.push({ok:c.fox>=r.fox,text:`🦊 狐が ${r.fox}匹以上いる`,now:`いま ${c.fox}匹`});
   if(r.deer) items.push({ok:c.deer>=r.deer,text:`🦌 鹿が ${r.deer}匹以上いる`,now:`いま ${c.deer}匹`});
   if(r.rabbit) items.push({ok:c.rabbit>=r.rabbit,text:`🐇 うさぎが ${r.rabbit}匹以上いる`,now:`いま ${c.rabbit}匹`});
   if(r.plants) items.push({ok:plants>=r.plants,text:`🌿🌱 草と木の芽が合計 ${r.plants}以上ある`,now:`いま ${plants}`});
   const need=requiredStableYears();
-  items.push({ok:state.stableTime>=need,text:`⚖️ バランスのよい状態を ${need.toFixed(1)}年以上保つ`,now:`いま ${state.stableTime.toFixed(1)}年`});
+  items.push({ok:currentScore>=s.minScore,text:`⚖️ いまの安定度が ${s.minScore}以上`,now:`いま ${currentScore}`});
+  items.push({ok:state.stableTime>=need,text:`🕰️ 安定した状態を ${need.toFixed(1)}年以上保つ`,now:`いま ${state.stableTime.toFixed(1)}年`});
   items.push({ok:state.year>=s.years,text:`⏱️ ${s.years}年間、大陸を見守る`,now:`いま ${Math.min(state.year,s.years).toFixed(1)}年`});
   return items;
 }
@@ -132,7 +134,7 @@ renderStage=function(){
 const updateBeforeLearning=update;
 update=function(dtSec){
   updateBeforeLearning(dtSec);
-  if(!state.stageDone) renderLearning();
+  renderLearning();
 };
 
 const startStageBeforeLearning=startStage;
