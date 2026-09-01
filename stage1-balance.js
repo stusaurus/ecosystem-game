@@ -33,6 +33,34 @@
     return items;
   };
 
+  // ui-v3 has its own compact top-objective renderer. Keep the Stage 1
+  // nutrient-cycle objective visible there too, immediately after plants.
+  function renderTopCycleGoal(){
+    const box=document.getElementById('v3Reqs');
+    if(!box)return;
+    let chip=box.querySelector('[data-stage1-cycle]');
+    if(state.stageIndex!==0){
+      if(chip)chip.remove();
+      return;
+    }
+    const n=Math.min(state.regrownFromNutrients||0,CYCLE_GOAL);
+    const ok=n>=CYCLE_GOAL;
+    if(!chip){
+      chip=document.createElement('div');
+      chip.dataset.stage1Cycle='1';
+      const anchor=box.children[2]||null;
+      box.insertBefore(chip,anchor);
+    }
+    const className=`v3-req ${ok?'ok':''}`;
+    const text=`${ok?'✓ ':''}♻️ ${n}/${CYCLE_GOAL}`;
+    if(chip.className!==className)chip.className=className;
+    if(chip.textContent!==text)chip.textContent=text;
+  }
+
+  const objectiveObserver=new MutationObserver(()=>renderTopCycleGoal());
+  objectiveObserver.observe(document.body,{childList:true,subtree:true});
+  setInterval(renderTopCycleGoal,500);
+
   const renderStageBeforeStage1=renderStage;
   renderStage=function(){
     renderStageBeforeStage1();
@@ -43,6 +71,7 @@
         mission.textContent=`うさぎと植物を守りながら、死→土→植物の循環を確かめよう。再生 ${n}/${CYCLE_GOAL}`;
       }
     }
+    renderTopCycleGoal();
   };
 
   const startStageBeforeStage1=startStage;
@@ -69,6 +98,7 @@
     }
     renderStage();
     if(typeof renderLearning==='function')renderLearning();
+    renderTopCycleGoal();
   };
 
   // Rebuild the current stage once so the tutorial setup is applied immediately.
