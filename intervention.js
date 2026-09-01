@@ -103,29 +103,45 @@ function aidViableNow(){
 const requirementsBeforeAid=stageRequirementsMet;
 stageRequirementsMet=function(){
   const rule=AID_RULES[state.stageIndex];
-  if(state.stableTime<currentStage().years*rule.stableRatio)return false;
+  if(state.stableTime+0.02<currentStage().years*rule.stableRatio)return false;
   return requirementsBeforeAid();
 };
 
 const finishBeforeAid=finishStage;
 finishStage=function(){
   finishBeforeAid();
-  const rule=AID_RULES[state.stageIndex],need=currentStage().years*rule.stableRatio;
   const status=document.getElementById('stageState');
-  if(status&&status.classList.contains('fail')&&state.stableTime<need){
-    const text=document.getElementById('modalText');
-    if(text)text.textContent=`終了時だけ整えてもクリアにはなりません。安定していたのは${state.stableTime.toFixed(1)}年で、この面では${need.toFixed(1)}年以上が必要です。`;
+  if(!status||!status.classList.contains('fail'))return;
+
+  const s=currentStage(),r=s.required||{},c=counts(),plants=c.grass+c.sapling;
+  const need=s.years*AID_RULES[state.stageIndex].stableRatio;
+  const missing=[];
+  if(r.wolf&&c.wolf<r.wolf)missing.push(`狼 ${c.wolf}/${r.wolf}`);
+  if(r.fox&&c.fox<r.fox)missing.push(`狐 ${c.fox}/${r.fox}`);
+  if(r.deer&&c.deer<r.deer)missing.push(`鹿 ${c.deer}/${r.deer}`);
+  if(r.rabbit&&c.rabbit<r.rabbit)missing.push(`うさぎ ${c.rabbit}/${r.rabbit}`);
+  if(r.plants&&plants<r.plants)missing.push(`植物 ${plants}/${r.plants}`);
+  if(stability(c)<s.minScore)missing.push(`安定度 ${stability(c)}/${s.minScore}`);
+  if(state.stableTime+0.02<need)missing.push(`安定した時間 ${state.stableTime.toFixed(1)}/${need.toFixed(1)}年`);
+  if(state.stageIndex===0&&window.stage1CycleGoal&&(state.regrownFromNutrients||0)<window.stage1CycleGoal){
+    missing.push(`植物の再生 ${state.regrownFromNutrients||0}/${window.stage1CycleGoal}`);
   }
+  const text=document.getElementById('modalText');
+  if(text&&missing.length)text.textContent=`あと少し。クリアできなかった条件：${missing.join('、')}。やり直して数の変化を見てみよう。`;
 };
 
 const updateBeforeAid=update;
 update=function(dtSec){
-  const before=state.year;
+  // Count this frame's stable time BEFORE the base update can finish the stage.
+  // Previously the last frame was skipped, which produced 1.9/2.0 years at 4.0 years.
+  if(state.running&&!state.stageDone&&!state.modalOpen){
+    const dy=Math.min(.035,Math.max(0,dtSec))*SPEEDS[state.speedIndex]*.12;
+    if(aidViableNow())state.stableTime+=dy;else state.crisisTime+=dy;
+  }
+
   updateBeforeAid(dtSec);
-  const dy=Math.max(0,state.year-before);
   if(state.stageDone)return;
   deliverAid();
-  if(aidViableNow())state.stableTime+=dy;else state.crisisTime+=dy;
   const tick=Math.floor(state.year*10);
   if(tick!==state._aidControlTick){state._aidControlTick=tick;renderControls();renderStage();}
 };
