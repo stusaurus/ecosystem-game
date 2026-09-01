@@ -5,6 +5,7 @@
   rabbitSprite.src='assets/rabbit-topdown-v2.png?v=20260901-1';
 
   const previousDrawEntity=drawEntity;
+  const previousDraw=draw;
   const groundMarks=Array.from({length:54},(_,i)=>({
     x:128+((i*137)%676),
     y:98+((i*83)%438),
@@ -140,8 +141,9 @@
     const direction=Math.atan2(a.vy,a.vx)+Math.PI/2;
     const hop=Math.sin(performance.now()*.011+a.id*1.7)*1.1*scale;
 
+    const visual=separatedAnimalPosition(a);
     ctx.save();
-    ctx.translate(a.x,a.y);
+    ctx.translate(visual.x,visual.y);
     ctx.fillStyle='rgba(28,35,20,.20)';
     ctx.beginPath();
     ctx.ellipse(0,height*.30,width*.40,height*.14,direction,0,Math.PI*2);
@@ -159,7 +161,11 @@
     ctx.rotate(direction);
     ctx.translate(0,hop);
     if(rabbitSprite.complete&&rabbitSprite.naturalWidth){
+      ctx.shadowColor='rgba(255,248,220,.72)';
+      ctx.shadowBlur=3;
       ctx.drawImage(rabbitSprite,-width/2,-height/2,width,height);
+      ctx.shadowColor='transparent';
+      ctx.shadowBlur=0;
     }else{
       // Keep the game usable while the small asset finishes loading.
       ctx.font=`${Math.round(24*scale)}px Apple Color Emoji,Segoe UI Emoji,sans-serif`;
@@ -179,10 +185,79 @@
     ctx.restore();
   }
 
+  function separatedAnimalPosition(a){
+    let ox=0,oy=0;
+    const minDistance=44;
+    for(const b of state.animals){
+      if(b.id===a.id||b.type!==a.type)continue;
+      let dx=a.x-b.x,dy=a.y-b.y;
+      let distance=Math.hypot(dx,dy);
+      if(distance>=minDistance)continue;
+      if(distance<.5){
+        const low=Math.min(a.id,b.id),high=Math.max(a.id,b.id);
+        const angle=((low*53+high*97)%360)*Math.PI/180;
+        const sign=a.id<b.id?-1:1;
+        dx=Math.cos(angle)*sign;
+        dy=Math.sin(angle)*sign;
+        distance=1;
+      }
+      const push=(minDistance-distance)*.34;
+      ox+=dx/distance*push;
+      oy+=dy/distance*push;
+    }
+    const length=Math.hypot(ox,oy);
+    if(length>18){ox=ox/length*18;oy=oy/length*18;}
+    const x=a.x+ox,y=a.y+oy;
+    return ctx.isPointInPath(state.continent,x,y)?{x,y}:{x:a.x,y:a.y};
+  }
+
+  function roundedRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.lineTo(x+w-r,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r);
+    ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+  }
+
+  function drawPopulationBadge(){
+    const c=counts();
+    const animals=['wolf','fox','deer','rabbit']
+      .filter(type=>currentStage().allowed.includes(type))
+      .map(type=>`${SPECIES[type].icon}${c[type]||0}`)
+      .join('  ');
+    const plants=(c.grass||0)+(c.sapling||0);
+    const label=`現在  ${animals}  🌿${plants}`;
+    ctx.save();
+    ctx.font='700 13px -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif';
+    ctx.textAlign='left';
+    ctx.textBaseline='middle';
+    const width=Math.ceil(ctx.measureText(label).width)+22;
+    roundedRect(14,14,width,30,15);
+    ctx.fillStyle='rgba(255,253,245,.90)';
+    ctx.fill();
+    ctx.strokeStyle='rgba(87,104,70,.28)';
+    ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.fillStyle='#314331';
+    ctx.fillText(label,25,29);
+    ctx.restore();
+  }
+
   drawEntity=function(e){
     if(e.type==='grass'){drawGrass(e);return;}
     if(e.type==='sapling'){drawSapling(e);return;}
     if(e.type==='rabbit'){drawRabbit(e);return;}
     previousDrawEntity(e);
+  };
+
+  draw=function(){
+    previousDraw();
+    drawPopulationBadge();
   };
 })();
