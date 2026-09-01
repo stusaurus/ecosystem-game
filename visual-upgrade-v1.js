@@ -1,8 +1,8 @@
-// First visual upgrade: a field-guide rabbit and living grassland.
+// Child-friendly visual upgrade: a picture-book rabbit and bright grassland.
 // Simulation rules stay in the existing files; this layer only changes drawing.
 (function(){
   const rabbitSprite=new Image();
-  rabbitSprite.src='assets/rabbit-topdown-v2.png?v=20260901-1';
+  rabbitSprite.src='assets/rabbit-topdown-v3.png?v=20260901-1';
 
   const previousDrawEntity=drawEntity;
   const previousDraw=draw;
@@ -39,10 +39,10 @@
     drawSea();
 
     ctx.save();
-    ctx.shadowColor='rgba(55,67,38,.24)';
+    ctx.shadowColor='rgba(55,85,45,.20)';
     ctx.shadowBlur=20;
-    ctx.fillStyle='#827a50';
-    ctx.strokeStyle='#667244';
+    ctx.fillStyle='#91aa68';
+    ctx.strokeStyle='#66884f';
     ctx.lineWidth=4;
     ctx.fill(state.continent);
     ctx.stroke(state.continent);
@@ -56,7 +56,7 @@
       ctx.save();
       ctx.translate(m.x,m.y);
       ctx.rotate(m.angle);
-      ctx.fillStyle=m.light?'rgba(190,169,103,.10)':'rgba(64,91,48,.10)';
+      ctx.fillStyle=m.light?'rgba(244,220,145,.12)':'rgba(56,116,55,.09)';
       ctx.beginPath();
       ctx.ellipse(0,0,m.rx,m.ry,0,0,Math.PI*2);
       ctx.fill();
@@ -68,7 +68,7 @@
     for(const p of state.plants){
       const radius=p.type==='sapling'?25:18;
       ctx.beginPath();
-      ctx.fillStyle=p.type==='sapling'?'rgba(66,115,54,.13)':'rgba(83,133,57,.17)';
+      ctx.fillStyle=p.type==='sapling'?'rgba(74,146,64,.14)':'rgba(91,165,70,.18)';
       ctx.arc(p.x,p.y,radius,0,Math.PI*2);
       ctx.fill();
     }
@@ -94,10 +94,10 @@
     ctx.rotate(lean);
     ctx.scale(scale,scale);
     ctx.lineCap='round';
-    ctx.lineWidth=1.35;
+    ctx.lineWidth=1.7;
     const blades=[[-5,5,-3,-5],[-2,6,-1,-8],[1,6,2,-10],[4,5,6,-6],[0,6,-5,-3]];
     blades.forEach((b,i)=>{
-      ctx.strokeStyle=i%2?'#4f7e3f':'#678f43';
+      ctx.strokeStyle=i%2?'#55a24f':'#82c85d';
       ctx.beginPath();
       ctx.moveTo(b[0],b[1]);
       ctx.quadraticCurveTo((b[0]+b[2])*.45-1,b[3]*.15,b[2],b[3]);
@@ -112,20 +112,20 @@
     ctx.save();
     ctx.translate(p.x,p.y);
     ctx.scale(scale,scale);
-    ctx.strokeStyle='#6d5434';
-    ctx.lineWidth=1.6;
+    ctx.strokeStyle='#8a6843';
+    ctx.lineWidth=1.8;
     ctx.lineCap='round';
     ctx.beginPath();
     ctx.moveTo(0,7);
     ctx.quadraticCurveTo(-1,0,1,-9);
     ctx.stroke();
-    ctx.fillStyle='#4f7e3f';
-    [[-4,-3,-.45],[5,-6,.55],[-3,-9,-.65]].forEach(([x,y,a])=>{
+    [[-4,-3,-.45,'#75bd5b'],[5,-6,.55,'#5eaa50'],[-3,-9,-.65,'#8aca61']].forEach(([x,y,a,color])=>{
       ctx.save();
       ctx.translate(x,y);
       ctx.rotate(a);
+      ctx.fillStyle=color;
       ctx.beginPath();
-      ctx.ellipse(0,0,4.2,2.1,0,0,Math.PI*2);
+      ctx.ellipse(0,0,4.5,2.35,0,0,Math.PI*2);
       ctx.fill();
       ctx.restore();
     });
@@ -144,7 +144,7 @@
     const visual=separatedAnimalPosition(a);
     ctx.save();
     ctx.translate(visual.x,visual.y);
-    ctx.fillStyle='rgba(28,35,20,.20)';
+    ctx.fillStyle='rgba(52,75,38,.15)';
     ctx.beginPath();
     ctx.ellipse(0,height*.30,width*.40,height*.14,direction,0,Math.PI*2);
     ctx.fill();
