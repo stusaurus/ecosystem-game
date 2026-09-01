@@ -55,10 +55,10 @@
     drawSea();
 
     ctx.save();
-    ctx.shadowColor='rgba(55,85,45,.20)';
+    ctx.shadowColor='rgba(87,66,40,.20)';
     ctx.shadowBlur=20;
-    ctx.fillStyle='#91aa68';
-    ctx.strokeStyle='#66884f';
+    ctx.fillStyle='#b89a69';
+    ctx.strokeStyle='#8b724d';
     ctx.lineWidth=4;
     ctx.fill(state.continent);
     ctx.stroke(state.continent);
@@ -72,7 +72,7 @@
       ctx.save();
       ctx.translate(m.x,m.y);
       ctx.rotate(m.angle);
-      ctx.fillStyle=m.light?'rgba(244,220,145,.12)':'rgba(56,116,55,.09)';
+      ctx.fillStyle=m.light?'rgba(246,222,165,.15)':'rgba(107,77,47,.10)';
       ctx.beginPath();
       ctx.ellipse(0,0,m.rx,m.ry,0,0,Math.PI*2);
       ctx.fill();
