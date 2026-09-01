@@ -15,7 +15,6 @@
   }
 
   function visualMargin(animal){
-    // Emoji artwork is larger than the collision radius, so keep the whole picture inland.
     return animal.radius+18;
   }
 
@@ -68,7 +67,6 @@
       return;
     }
 
-    // Prevent the next step from crossing the coast instead of correcting after it happens.
     const look=Math.max(.10,dtSec*2.4);
     const nx=a.x+a.vx*look,ny=a.y+a.vy*look;
     if(!strictOnLand(nx,ny,margin))turnInward(a,false);
@@ -87,7 +85,6 @@
   }
 
   drawBackground=function(){
-    // Sea
     const sea=ctx.createLinearGradient(0,0,0,VIEW_H);
     sea.addColorStop(0,'#89cff3');
     sea.addColorStop(1,'#c5eafb');
@@ -100,7 +97,6 @@
       ctx.ellipse(0,0,d.w,d.h,0,0,Math.PI*2);ctx.fill();ctx.restore();
     }
 
-    // Soil-colored continent
     ctx.save();
     ctx.shadowColor='rgba(76,52,31,.22)';
     ctx.shadowBlur=18;
@@ -111,7 +107,6 @@
     ctx.stroke(state.continent);
     ctx.restore();
 
-    // Subtle soil patches for a natural, earthy look.
     ctx.save();
     ctx.clip(state.continent);
     ctx.fillStyle='rgba(104,70,42,.10)';
