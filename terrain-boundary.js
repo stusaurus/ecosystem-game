@@ -29,7 +29,7 @@
   function turnInward(a,strong=false){
     const dx=LAND_CENTER.x-a.x,dy=LAND_CENTER.y-a.y;
     const len=Math.max(1,Math.hypot(dx,dy));
-    const base=Math.max(SPECIES[a.type].speed*(strong?.72:.55),Math.hypot(a.vx,a.vy)*.72);
+    const base=Math.max(SPECIES[a.type].speed*(strong ? .72 : .55),Math.hypot(a.vx,a.vy)*.72);
     const jitter=rand(-.18,.18);
     const ca=Math.cos(jitter),sa=Math.sin(jitter);
     const ux=dx/len,uy=dy/len;
