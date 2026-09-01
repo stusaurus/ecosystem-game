@@ -135,8 +135,8 @@
     const d=SPECIES.rabbit;
     const adult=clamp(a.age/d.adultAge,0,1);
     const scale=.68+adult*.32;
-    const width=34*scale;
-    const height=51*scale;
+    const width=42*scale;
+    const height=64*scale;
     const direction=Math.atan2(a.vy,a.vx)+Math.PI/2;
     const hop=Math.sin(performance.now()*.011+a.id*1.7)*1.1*scale;
 
