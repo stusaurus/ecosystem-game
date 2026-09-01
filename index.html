@@ -107,6 +107,27 @@
           restartCurrentStage();
         };
       }
+
+      // iPhone: result buttons can lose the synthesized click. Catch the actual
+      // finger release at document level and invoke the already-bound turn action.
+      let turnTapLockUntil=0;
+      function forceTurnAction(e){
+        const target=e.target&&e.target.closest?e.target.closest('#turnResultNext,#turnNextStage,#turnReplay'):null;
+        if(!target)return;
+        const overlay=document.getElementById('turnOverlay');
+        if(!overlay||overlay.classList.contains('hidden'))return;
+        const now=Date.now();
+        if(now<turnTapLockUntil)return;
+        const handler=target.onclick;
+        if(typeof handler!=='function')return;
+        turnTapLockUntil=now+700;
+        e.preventDefault();
+        e.stopPropagation();
+        target.onclick=null;
+        handler.call(target,e);
+      }
+      document.addEventListener('pointerup',forceTurnAction,true);
+      document.addEventListener('touchend',forceTurnAction,{capture:true,passive:false});
     })();
   </script>
 </body>
