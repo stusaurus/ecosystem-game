@@ -1,8 +1,29 @@
 // Stage 1 tutorial balance: make the nutrient cycle visible and required.
 (function(){
   const CYCLE_GOAL=3;
+  const RABBIT_BASE={
+    offspring:SPECIES.rabbit.offspring,
+    breedCooldown:SPECIES.rabbit.breedCooldown,
+    mealsToBreed:SPECIES.rabbit.mealsToBreed
+  };
+
+  // Stage 1 starts smaller and breeds more slowly so the player can actually
+  // observe the cycle instead of watching rabbits explode automatically.
+  STAGES[0].start.rabbit=6;
   state.regrownFromNutrients=0;
   window.stage1CycleGoal=CYCLE_GOAL;
+
+  function applyRabbitRules(index){
+    if(index===0){
+      SPECIES.rabbit.offspring=1;
+      SPECIES.rabbit.breedCooldown=1.45;
+      SPECIES.rabbit.mealsToBreed=3;
+    }else{
+      SPECIES.rabbit.offspring=RABBIT_BASE.offspring;
+      SPECIES.rabbit.breedCooldown=RABBIT_BASE.breedCooldown;
+      SPECIES.rabbit.mealsToBreed=RABBIT_BASE.mealsToBreed;
+    }
+  }
 
   // Count only plants created by the nutrient-regrowth system.
   const updateNutrientsBeforeStage1=updateNutrients;
@@ -76,10 +97,18 @@
 
   const startStageBeforeStage1=startStage;
   startStage=function(index){
-    startStageBeforeStage1(index);
+    const target=Math.max(0,Math.min(STAGES.length-1,Number(index)||0));
+    applyRabbitRules(target);
+    startStageBeforeStage1(target);
     state.regrownFromNutrients=0;
 
     if(state.stageIndex===0){
+      // Don't let the initial group reproduce instantly. They must feed first.
+      state.animals.filter(a=>a.type==='rabbit').forEach(a=>{
+        a.meals=0;
+        a.breedCooldown=Math.max(a.breedCooldown,.55);
+      });
+
       // A natural population has mixed ages. One older rabbit guarantees that
       // natural death and soil return can be observed during the four-year tutorial.
       const elder=state.animals.find(a=>a.type==='rabbit');
