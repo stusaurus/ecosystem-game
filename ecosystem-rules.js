@@ -1,6 +1,5 @@
 // Ecosystem core: abundant starting vegetation, nutrient-limited regrowth, and hard land-only movement.
 (function(){
-  // The continent begins green. Plants do not endlessly respawn by themselves.
   const GREEN_START=[
     {grass:120,sapling:20},
     {grass:132,sapling:22},
@@ -20,24 +19,20 @@
     if(stage.zones?.sapling) stage.zones.sapling[0]=SAPLING_ZONE_MIN[i];
   });
 
-  // Larger bodies return more nutrients when they die.
   DEATH_PLANT_BONUS.wolf=14;
   DEATH_PLANT_BONUS.fox=9;
   DEATH_PLANT_BONUS.deer=12;
   DEATH_PLANT_BONUS.rabbit=4;
   const STARVATION_NUTRIENTS={wolf:10,fox:7,deer:9,rabbit:3};
 
-  // Expose one simple value for the classroom UI.
   window.soilNutrientAmount=function(){
     return Math.round((state.nutrients||[]).reduce((sum,n)=>sum+Math.max(0,n.remaining||0),0));
   };
 
-  // Plants no longer appear from nowhere. All regrowth is handled by nutrient patches below.
   growPlants=function(){
     plantTimer=0;
   };
 
-  // Natural death is already handled by the base game. Add nutrient return for starvation as well.
   const lifeBeforeCycle=lifeAndDeath;
   lifeAndDeath=function(){
     const before=new Map(state.animals.map(a=>[a.id,{
@@ -59,11 +54,10 @@
     }
   };
 
-  // Nutrient patches are the only source of new plants.
   updateNutrients=function(dtYears){
     const slow=state.year<state.plantSlowUntil;
     const boost=state.year<state.plantBoostUntil;
-    const growthRate=boost?1.7:(slow?.45:1);
+    const growthRate=boost ? 1.7 : (slow ? .45 : 1);
 
     for(const n of state.nutrients){
       n.life=(n.life??4.6)-dtYears;
@@ -87,7 +81,6 @@
     state.nutrients=state.nutrients.filter(n=>n.remaining>0||n.life>0);
   };
 
-  // Keep the learning text aligned with the nutrient cycle.
   if(typeof LEARNING!=='undefined'){
     LEARNING[0].theme='植物・動物・土のつながり';
     LEARNING[0].learn='最初は植物がたくさんあります。うさぎが食べると植物は減り、動物が死ぬと栄養が土へ戻って新しい植物が育ちます。';
@@ -101,7 +94,6 @@
   const note=document.getElementById('controls')?.closest('.panel')?.querySelector('.note');
   if(note)note.textContent='草や木の芽は直接増やせません。動物が死んで土へ栄養が戻ることで、新しい植物が育ちます。';
 
-  // Hard land-only movement.
   function hardMargin(a){
     return Math.max(46,a.radius+34);
   }
@@ -165,7 +157,6 @@
     return a;
   };
 
-  // Nothing is ever painted on the sea.
   draw=function(){
     drawBackground();
     ctx.save();
@@ -178,6 +169,5 @@
     ctx.restore();
   };
 
-  // Apply the new starting vegetation immediately on page load.
   if(typeof startStage==='function')startStage(state.stageIndex||0);
 })();
