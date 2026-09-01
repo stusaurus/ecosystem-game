@@ -17,7 +17,7 @@
       <div class="top-buttons">
         <button id="speedBtn" class="pill ghost" type="button">速度 ×1</button>
         <button id="pauseBtn" class="pill" type="button">一時停止</button>
-        <button id="resetBtn" class="pill ghost" type="button">リセット</button>
+        <button id="resetBtn" class="pill ghost" type="button">やり直す</button>
       </div>
     </header>
 
@@ -74,7 +74,41 @@
   <script src="education.js"></script>
   <script src="terrain-boundary.js"></script>
   <script src="ecosystem-rules.js"></script>
-  <script src="ui-v3.js?v=20260901-1"></script>
-  <script src="reset-native.js?v=20260901-2"></script>
+  <script src="ui-v3.js?v=20260901-3"></script>
+  <script>
+    (function(){
+      const resetButton=document.getElementById('resetBtn');
+
+      function restartCurrentStage(){
+        const index=state.stageIndex;
+        const overlay=document.getElementById('v3Overlay');
+        if(overlay)overlay.classList.add('hidden');
+        startStage(index);
+        const btn=document.getElementById('resetBtn');
+        if(btn){
+          btn.textContent='やり直す';
+          btn.style.setProperty('display','inline-flex','important');
+        }
+      }
+
+      if(resetButton){
+        resetButton.textContent='やり直す';
+        resetButton.style.setProperty('display','inline-flex','important');
+        resetButton.onclick=function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          restartCurrentStage();
+        };
+      }
+
+      document.addEventListener('click',function(e){
+        const btn=e.target.closest && e.target.closest('#v3Reset');
+        if(!btn)return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        restartCurrentStage();
+      },true);
+    })();
+  </script>
 </body>
 </html>
