@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f6f3e8" />
+  <title>生態系バランス</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">ECOSYSTEM SIMULATOR</p>
+        <h1>生態系バランス</h1>
+      </div>
+      <button id="resetBtn" class="ghost-btn" type="button">やり直す</button>
+    </header>
+
+    <section class="status-card">
+      <div class="year-block">
+        <span>YEAR</span>
+        <strong id="year">0</strong>
+      </div>
+      <div class="stability-block">
+        <div class="status-row">
+          <span>生態系安定度</span>
+          <strong><span id="stability">--</span>%</strong>
+        </div>
+        <div class="meter"><div id="stabilityBar"></div></div>
+        <p id="statusMessage">まずは生態系を観察してみよう。</p>
+      </div>
+    </section>
+
+    <section class="objective">
+      <strong>目標</strong>
+      <span>安定度70%以上を10年間維持する</span>
+      <div class="streak">連続 <b id="stableYears">0</b> / 10 年</div>
+    </section>
+
+    <section class="pyramid-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">FOOD PYRAMID</p>
+          <h2>生態系ピラミッド</h2>
+        </div>
+        <div class="actions-left">介入 <b id="actionsLeft">3</b> 回</div>
+      </div>
+      <div id="pyramid" class="pyramid"></div>
+    </section>
+
+    <section class="forecast-card">
+      <div class="section-heading compact">
+        <h2>いまの傾向</h2>
+        <span class="hint">数値は予測せず、方向だけ表示</span>
+      </div>
+      <div id="forecastGrid" class="forecast-grid"></div>
+    </section>
+
+    <section class="controls-card">
+      <div class="section-heading compact">
+        <div>
+          <p class="eyebrow">INTERVENTION</p>
+          <h2>今年の介入</h2>
+        </div>
+        <span class="hint">1年に3回まで</span>
+      </div>
+      <p class="control-note">＋は保護・植栽・導入、−は捕獲・間引き。介入後に「1年進める」。</p>
+      <div id="controlGrid" class="control-grid"></div>
+    </section>
+
+    <button id="nextYearBtn" class="next-year-btn" type="button">
+      <span>1年進める</span>
+      <small>繁殖・捕食・餓死・自然死を計算</small>
+    </button>
+
+    <section class="report-card">
+      <div class="section-heading compact">
+        <div>
+          <p class="eyebrow">YEAR REPORT</p>
+          <h2>今年の変化</h2>
+        </div>
+      </div>
+      <div id="report" class="report-empty">まだ1年目は始まっていません。</div>
+    </section>
+
+    <section class="rules-card">
+      <details>
+        <summary>この世界のルール</summary>
+        <ul>
+          <li>植物は毎年増えるが、草食動物に食べられる。</li>
+          <li>餌が多いほど繁殖しやすく、餌不足では繁殖が止まり餓死が増える。</li>
+          <li>小型の生物ほど繁殖が速く、大型の生物ほど回復に時間がかかる。</li>
+          <li>肉食動物を減らしすぎると草食動物が増え、植物が減りすぎることがある。</li>
+          <li>「何もしない」ことが最善の年もある。</li>
+        </ul>
+      </details>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
