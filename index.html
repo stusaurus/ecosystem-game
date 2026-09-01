@@ -79,6 +79,7 @@
   <script src="stage1-balance.js?v=20260901-3"></script>
   <script src="stage2-balance.js?v=20260901-1"></script>
   <script src="ui-v3.js?v=20260901-5"></script>
+  <script src="turn-game.js?v=20260901-1"></script>
   <script>
     (function(){
       const resetButton=document.getElementById('resetBtn');
@@ -87,6 +88,8 @@
         const index=state.stageIndex;
         const overlay=document.getElementById('v3Overlay');
         if(overlay)overlay.classList.add('hidden');
+        const turnOverlay=document.getElementById('turnOverlay');
+        if(turnOverlay)turnOverlay.classList.add('hidden');
         startStage(index);
         const btn=document.getElementById('resetBtn');
         if(btn){
