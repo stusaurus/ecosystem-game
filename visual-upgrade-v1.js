@@ -2,7 +2,7 @@
 // Simulation rules stay in the existing files; this layer only changes drawing.
 (function(){
   const rabbitSprite=new Image();
-  rabbitSprite.src='assets/rabbit-topdown-v1.png?v=20260901-1';
+  rabbitSprite.src='assets/rabbit-topdown-v2.png?v=20260901-1';
 
   const previousDrawEntity=drawEntity;
   const groundMarks=Array.from({length:54},(_,i)=>({
